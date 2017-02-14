@@ -10,6 +10,24 @@ import (
 	raven "github.com/getsentry/raven-go"
 )
 
+// JSONResultContainer is a container for JSON answer to GET/POST/PUT/DELETE successful calls
+type JSONResultContainer struct {
+	Result interface{}
+}
+
+// Paginator struct
+type Paginator struct {
+	Entities []interface{}
+	Count    int64
+	Offset   int
+	Limit    int
+}
+
+// ExtendedController adds extra methods to beego.Controller
+type ExtendedController struct {
+	beego.Controller
+}
+
 // FinishTransaction commits or rollbacks current transaction depending on error state
 func FinishTransaction(o orm.Ormer, err error) {
 	if err == nil {
@@ -27,11 +45,6 @@ func ReflectFields(source interface{}, destination interface{}) {
 		//log.Println(s.Type().Field(i).Name, " = ", s.Field(i))
 		d.FieldByName(s.Type().Field(i).Name).Set(s.Field(i))
 	}
-}
-
-// ExtendedController adds extra methods to beego.Controller
-type ExtendedController struct {
-	beego.Controller
 }
 
 // JSONErrorWithCode returns json-encoded error with http code
@@ -57,9 +70,4 @@ func (c *ExtendedController) JSONErrorsMapWithCode(err map[string]*validation.Er
 	c.Ctx.ResponseWriter.WriteHeader(code)
 	c.ServeJSON()
 	c.StopRun()
-}
-
-// JSONResultContainer is a container for JSON answer to GET/POST/PUT/DELETE successful calls
-type JSONResultContainer struct {
-	Result interface{}
 }
