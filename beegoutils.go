@@ -43,7 +43,10 @@ func ReflectFields(source interface{}, destination interface{}) {
 	d := reflect.ValueOf(destination).Elem()
 	for i := 0; i < s.NumField(); i++ {
 		//log.Println(s.Type().Field(i).Name, " = ", s.Field(i))
-		d.FieldByName(s.Type().Field(i).Name).Set(s.Field(i))
+		fieldName := s.Type().Field(i).Name
+		if d.FieldByName(fieldName).CanAddr() {
+			d.FieldByName(fieldName).Set(s.Field(i))
+		}
 	}
 }
 
