@@ -17,10 +17,27 @@ type JSONResultContainer struct {
 
 // Paginator struct
 type Paginator struct {
-	Entities []interface{}
+	Entities interface{}
 	Count    int64
 	Offset   int
 	Limit    int
+	Order    string
+}
+
+// LoadPage loads page of objects into paginator
+func (p *Paginator) LoadPage(object interface{}, qs orm.QuerySeter) error {
+	// Create a slice to begin with
+	myType := reflect.TypeOf(object)
+	slice := reflect.MakeSlice(reflect.SliceOf(myType), 0, 10)
+	// Create a pointer to a slice value and set it to the slice
+	x := reflect.New(slice.Type())
+	x.Elem().Set(slice)
+	_, err := qs.OrderBy(p.Order).Limit(p.Limit, p.Offset).All(x.Interface())
+	if err == nil {
+		p.Entities = x.Interface()
+		p.Count, err = qs.Count()
+	}
+	return err
 }
 
 // ExtendedController adds extra methods to beego.Controller
