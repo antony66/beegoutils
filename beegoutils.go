@@ -69,7 +69,7 @@ func ReflectFields(source interface{}, destination interface{}) {
 
 // JSONErrorWithCode returns json-encoded error with http code
 func (c *ExtendedController) JSONErrorWithCode(err error, code int) {
-	log.Println(err.Error())
+	log.Printf("An error %d occured while processing %s %s: %s\n", code, c.Ctx.Request.Method, c.Ctx.Request.URL, err.Error())
 	if code == 500 && beego.BConfig.RunMode != "dev" {
 		raven.SetHttpContext(raven.NewHttp(c.Ctx.Request))
 		raven.CaptureErrorAndWait(err, nil)
