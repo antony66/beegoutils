@@ -29,12 +29,12 @@ func RunSSHCommand(server ServerInterface, command string, stdin io.Reader) ([]b
 	var err error
 	fake := beego.AppConfig.DefaultBool("fake_ssh", false)
 	buf := new(bytes.Buffer)
+	log.Printf("SSH Command (fake=%v) on %s: %s\n", fake, server.GetName(), command)
 	if stdin != nil {
 		tee := io.TeeReader(stdin, buf)
-		b, _ := ioutil.ReadAll(tee)
-		log.Printf("SSH Command (fake=%v) on %s: %s\nSTDIN: %s\n", fake, server.GetName(), command, b)
-	} else {
-		log.Printf("SSH Command (fake=%v) on %s: %s\nSTDIN: <empty>\n", fake, server.GetName(), command)
+		if b, e := ioutil.ReadAll(tee); e == nil {
+			log.Printf("STDIN: %s\n", b)
+		}
 	}
 	if !fake {
 		var conn *sshwrapper.SSHConn
@@ -43,7 +43,7 @@ func RunSSHCommand(server ServerInterface, command string, stdin io.Reader) ([]b
 			outp, err = conn.CombinedOutput(command, buf)
 		}
 		if err != nil {
-			err = fmt.Errorf("Error executing ssh command on %s: %s:\nOutput: %s\n", server.GetName(), err, string(outp))
+			err = fmt.Errorf("Error executing ssh command on %s: %s: %s\n", server.GetName(), err, string(outp))
 		}
 	}
 	return outp, err
