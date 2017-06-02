@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"strings"
 )
 
 // ReadDockerSecret reads content of docker secret's file
@@ -12,5 +13,5 @@ func ReadDockerSecret(filename string) string {
 	if err != nil {
 		log.Fatalf("Unable to read Docker Secret file %s", filename)
 	}
-	return string(secret)
+	return strings.TrimSpace(string(secret))
 }
