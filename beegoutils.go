@@ -15,8 +15,8 @@ type JSONResultContainer struct {
 	Result interface{}
 }
 
-// SimplePaginator struct
-type SimplePaginator struct {
+// Paginator struct
+type Paginator struct {
 	Entities interface{}
 	Count    int64
 	Offset   int
@@ -25,7 +25,7 @@ type SimplePaginator struct {
 }
 
 // LoadPage loads page of objects into paginator
-func (p *SimplePaginator) LoadPage(object interface{}, qs orm.QuerySeter) error {
+func (p *Paginator) LoadPage(object interface{}, qs orm.QuerySeter) error {
 	// Create a slice to begin with
 	myType := reflect.TypeOf(object)
 	slice := reflect.MakeSlice(reflect.SliceOf(myType), 0, 10)
