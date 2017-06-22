@@ -15,8 +15,8 @@ type JSONResultContainer struct {
 	Result interface{}
 }
 
-// Paginator struct
-type Paginator struct {
+// SimplePaginator struct
+type SimplePaginator struct {
 	Entities interface{}
 	Count    int64
 	Offset   int
@@ -25,7 +25,7 @@ type Paginator struct {
 }
 
 // LoadPage loads page of objects into paginator
-func (p *Paginator) LoadPage(object interface{}, qs orm.QuerySeter) error {
+func (p *SimplePaginator) LoadPage(object interface{}, qs orm.QuerySeter) error {
 	// Create a slice to begin with
 	myType := reflect.TypeOf(object)
 	slice := reflect.MakeSlice(reflect.SliceOf(myType), 0, 10)
@@ -52,19 +52,6 @@ func FinishTransaction(o orm.Ormer, err error) {
 		return
 	}
 	o.Rollback()
-}
-
-// ReflectFields copies all existing field values from source struct to destination
-func ReflectFields(source interface{}, destination interface{}) {
-	s := reflect.ValueOf(source).Elem()
-	d := reflect.ValueOf(destination).Elem()
-	for i := 0; i < s.NumField(); i++ {
-		//log.Println(s.Type().Field(i).Name, " = ", s.Field(i))
-		fieldName := s.Type().Field(i).Name
-		if d.FieldByName(fieldName).CanAddr() {
-			d.FieldByName(fieldName).Set(s.Field(i))
-		}
-	}
 }
 
 // JSONErrorWithCode returns json-encoded error with http code
