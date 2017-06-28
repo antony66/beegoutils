@@ -23,6 +23,7 @@ type Source struct {
 	SliceString   []string
 	BGSliceString SliceStringField
 	Child         *SourceChild
+	Intf          interface{}
 }
 
 type Destination struct {
@@ -33,10 +34,12 @@ type Destination struct {
 	SliceString   SliceStringField // types switched for reason
 	BGSliceString []string
 	Child         *DestinationChild
+	Intf          string
 }
 
 func TestReflection(t *testing.T) {
-	source := &Source{Int: 1, Int64: 2, String: "3", SliceString: []string{"4", "something"}, BGSliceString: []string{"5", "something else"}, Child: new(SourceChild)}
+	source := &Source{Int: 1, Int64: 2, String: "3", SliceString: []string{"4", "something"},
+		BGSliceString: []string{"5", "something else"}, Child: new(SourceChild), Intf: 123}
 	destination := new(Destination)
 	// we only need to know if ReflectFields would pass or fail
 	ReflectFields(source, destination)

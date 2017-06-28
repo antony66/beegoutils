@@ -1,6 +1,9 @@
 package beegoutils
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 // ReflectFields copies all existing field values from source struct to destination
 func ReflectFields(source interface{}, destination interface{}) {
@@ -11,11 +14,17 @@ func ReflectFields(source interface{}, destination interface{}) {
 		srcValue := s.FieldByName(fieldName)
 		dstValue := d.FieldByName(fieldName)
 		if srcValue.IsValid() && dstValue.CanAddr() {
-			switch dstValue.Kind() {
-			case reflect.Struct, reflect.Ptr:
-				continue // just skip these fields
-			default:
+			if srcValue.Type() == dstValue.Type() {
 				dstValue.Set(srcValue)
+			} else {
+				switch dstValue.Kind() {
+				case reflect.Struct, reflect.Ptr:
+					continue // just skip these fields
+				case reflect.String:
+					dstValue.Set(reflect.ValueOf(fmt.Sprintf("%v", srcValue.Interface())))
+				default:
+					dstValue.Set(srcValue)
+				}
 			}
 		}
 	}
