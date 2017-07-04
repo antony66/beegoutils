@@ -3,12 +3,13 @@ package paginator
 import (
 	"reflect"
 
-	"github.com/antony66/beegoutils"
 	"github.com/astaxie/beego/orm"
 )
 
+type copyFunc func(interface{}, interface{})
+
 // GetPage loads page of objects.
-func (p *Paginator) GetPage(object interface{}, qs orm.QuerySeter, dstObj interface{}) (interface{}, int64, error) {
+func (p *Paginator) GetPage(object interface{}, qs orm.QuerySeter, dstObj interface{}, copy copyFunc) (interface{}, int64, error) {
 	// Create a slice to begin with
 	var count int64
 	myType := reflect.TypeOf(object)
@@ -26,7 +27,8 @@ func (p *Paginator) GetPage(object interface{}, qs orm.QuerySeter, dstObj interf
 	for i := 0; i < xElem.Len(); i++ {
 		s := xElem.Index(i)
 		d := reflect.New(dstType.Elem())
-		beegoutils.ReflectFields(s.Interface(), d.Interface())
+		copy(s.Interface(), d.Interface())
+		//beegoutils.ReflectFields(s.Interface(), d.Interface())
 		dstSlice = reflect.Append(dstSlice, d)
 	}
 	return dstSlice.Interface(), count, err
