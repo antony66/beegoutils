@@ -44,6 +44,7 @@ func RunSSHCommand(server ServerInterface, command string, stdin io.Reader) ([]b
 		}
 		if err != nil {
 			err = fmt.Errorf("Error executing ssh command on %s: %s: %s\n", server.GetName(), err, string(outp))
+			log.Println(err)
 		}
 	}
 	return outp, err
