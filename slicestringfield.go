@@ -49,6 +49,8 @@ func (e *SliceStringField) SetRaw(value interface{}) error {
 			}
 			e.Set(v)
 		}
+	case nil:
+		// do nothing
 	default:
 		return fmt.Errorf("<SliceStringField.SetRaw> unknown value `%v`", value)
 	}
