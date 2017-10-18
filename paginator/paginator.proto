@@ -7,5 +7,5 @@ message Paginator {
     int64 offset = 2;
     int64 limit = 3;
     string order = 4;
-    string filter = 5;
+    map<string, string> filters = 6;
 }
