@@ -39,6 +39,7 @@ func RunSSHCommand(server ServerInterface, command string, stdin io.Reader) ([]b
 	if !fake {
 		var conn *sshwrapper.SSHConn
 		conn, err = getSSHConn(server)
+		defer conn.Close()
 		if err == nil {
 			outp, err = conn.CombinedOutput(command, buf)
 		}
